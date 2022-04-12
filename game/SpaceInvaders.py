@@ -85,8 +85,24 @@ class SpaceInvaders():
         """ A COMPLETER AVEC VOTRE ETAT
         Cette méthode doit renvoyer l'état du système comme vous aurez choisi de
         le représenter. Vous pouvez utiliser les accesseurs ci-dessus pour cela. 
+
+        Retourne des différences de distance en X et Y entre l'invader et le vaisseau
+
         """
-        return "L'état n'est pas implémenté (SpaceInvaders.get_state)"
+        alien_Y = 0
+        index = 0
+        index_min = 0
+        for alien in self.get_indavers_Y:
+            if alien > alien_Y:
+                alien_Y = alien
+                index_min = index
+            index +=1
+
+        ecart_X = abs(self.get_player_X - self.get_indavers_X[index_min])
+        ecart_Y = self.get_player_Y - self.get_indavers_X[index_min]
+        
+        return ((ecart_X,ecart_Y,self.bullet_state))
+
 
     def reset(self):
         """Reset the game at the initial state.
