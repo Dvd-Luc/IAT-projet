@@ -5,6 +5,8 @@ from pygame import mixer
 import numpy as np
 import os
 
+from scipy import rand
+
 
 def getURL(filename):
     return os.path.dirname(__file__) + "/" + filename
@@ -62,6 +64,9 @@ class SpaceInvaders():
     def get_indavers_X(self) -> 'List[int]':
         return self.invader_X
 
+    def get_former_indavers_X(self) -> 'List[int]':
+        return self.former_invader_X
+
     def get_indavers_Y(self) -> 'List[int]':
         return self.invader_Y
 
@@ -98,10 +103,15 @@ class SpaceInvaders():
                 index_min = index
             index +=1
 
+        invader_direction = -1 if (self.get_indavers_X[index_min]- self.get_former_indavers_X[index_min]<0) else 1
+
         ecart_X = abs(self.get_player_X - self.get_indavers_X[index_min])
         ecart_Y = self.get_player_Y - self.get_indavers_X[index_min]
+
+        discrete_ecart_X = int(ecart_X / 20) #20 pixels de large par etat --> 800/20 = 40 etats
+        discrete_ecart_Y = int(ecart_Y/ 60) #60 pixels de large par etat
         
-        return ((ecart_X,ecart_Y,self.bullet_state))
+        return ((discrete_ecart_X, discrete_ecart_Y, invader_direction, self.bullet_state))
 
 
     def reset(self):
@@ -116,12 +126,15 @@ class SpaceInvaders():
         # Invader
         self.invaderImage = []
         self.invader_X = []
+        self.former_invader_X = []
         self.invader_Y = []
         self.invader_Xchange = []
         self.invader_Ychange = []
         for _ in range(SpaceInvaders.NO_INVADERS):
             self.invaderImage.append(pygame.image.load(getURL('data/alien.png')))
-            self.invader_X.append(random.randint(64, 737))
+            randomInvader = random.randint(64, 737)
+            self.invader_X.append(randomInvader)
+            self.former_invader_X.append(randomInvader)
             self.invader_Y.append(random.randint(30, 180))
             self.invader_Xchange.append(1.2)
             self.invader_Ychange.append(50)
@@ -167,6 +180,7 @@ class SpaceInvaders():
         # adding the change in the player position
         self.player_X += self.player_Xchange
         for i in range(SpaceInvaders.NO_INVADERS):
+            self.former_invader_X[i] += self.invader_X[i]
             self.invader_X[i] += self.invader_Xchange[i]
     
         # bullet movement
