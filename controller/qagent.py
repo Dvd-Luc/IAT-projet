@@ -1,6 +1,6 @@
 import numpy as np
-from agent import AgentInterface
-from world.maze import Maze
+from controller import AgentInterface
+from game.SpaceInvaders import SpaceInvaders
 from epsilon_profile import EpsilonProfile
 import pandas as pd
 
@@ -10,7 +10,7 @@ class QAgent(AgentInterface):
     pour mettre à jour sa politique d'action.
     """
 
-    def __init__(self, maze: Maze, eps_profile: EpsilonProfile, gamma: float, alpha: float):
+    def __init__(self, spaceInvader :SpaceInvaders, eps_profile: EpsilonProfile, gamma: float, alpha: float):
         """A LIRE
         Ce constructeur initialise une nouvelle instance de la classe QAgent.
         Il doit stocker les différents paramètres nécessaires au fonctionnement de l'algorithme et initialiser la 
@@ -33,10 +33,10 @@ class QAgent(AgentInterface):
         :type mazeValues: data frame pandas
         """
         # Initialise la fonction de valeur Q
-        self.Q = np.zeros([maze.ny, maze.nx, maze.na])
+        self.Q = np.zeros([40, 10, 2, 2, 4]) #ecartX; ecartY; DirectionAlien; Etat bullet; actions possibles
 
-        self.maze = maze
-        self.na = maze.na
+        self.spaceInvader = spaceInvader
+        self.na = spaceInvader.na
 
         # Paramètres de l'algorithme
         self.gamma = gamma
@@ -47,7 +47,7 @@ class QAgent(AgentInterface):
 
         # Visualisation des données (vous n'avez pas besoin de comprendre cette partie)
         self.qvalues = pd.DataFrame(data={'episode': [], 'value': []})
-        self.values = pd.DataFrame(data={'nx': [maze.nx], 'ny': [maze.ny]})
+        self.values = pd.DataFrame(data={'ecartX': [40], 'ecartY': [10], 'directionAlien': [2], 'BulletState': [2]})
 
     def learn(self, env, n_episodes, max_steps):
         """Cette méthode exécute l'algorithme de q-learning. 
@@ -67,13 +67,13 @@ class QAgent(AgentInterface):
         # Execute N episodes 
         for episode in range(n_episodes):
             # Reinitialise le jeu
-            state = game.reset()
+            state = env.reset()
             # Execute K steps 
             for step in range(max_steps):
                 # Selectionne une action 
                 action = self.select_action(state)
                 # Echantillonne l'état suivant et la récompense
-                next_state, reward, is_done = game.step(action)
+                next_state, reward, is_done = env.step(action)
                 # Mets à jour la fonction de valeur Q
                 self.updateQ(state, action, reward, next_state)
                 
@@ -86,13 +86,13 @@ class QAgent(AgentInterface):
             self.epsilon = max(self.epsilon - self.eps_profile.dec_episode / (n_episodes - 1.), self.eps_profile.final)
 
             # Sauvegarde et affiche les données d'apprentissage
-            # if n_episodes >= 0:
+            if n_episodes >= 0:
             #    state = env.reset_using_existing_maze()
-            #    print("\r#> Ep. {}/{} Value {}".format(episode, n_episodes, self.Q[state][self.select_greedy_action(state)]), end =" ")
-            #    self.save_log(env, episode)
+               print("\r#> Ep. {}/{} Value {}".format(episode, n_episodes, self.Q[state][self.select_greedy_action(state)]), end =" ")
+               #self.save_log(env, episode)
 
-        self.values.to_csv('partie_3/visualisation/logV.csv')
-        self.qvalues.to_csv('partie_3/visualisation/logQ.csv')
+        # self.values.to_csv('visualisation/logV.csv')
+        # self.qvalues.to_csv('visualisation/logQ.csv')
 
     def updateQ(self, state, action, reward, next_state):
         """À COMPLÉTER!
@@ -127,19 +127,16 @@ class QAgent(AgentInterface):
         # greedy action with random tie break
         return np.random.choice(np.where(self.Q[state] == mx)[0])
 
-    def save_log(self, env, episode):
-        """Sauvegarde les données d'apprentissage.
-        :warning: Vous n'avez pas besoin de comprendre cette méthode
-        """
-        state = env.reset_using_existing_maze()
-        # Construit la fonction de valeur d'état associée à Q
-        V = np.zeros((int(self.maze.ny), int(self.maze.nx)))
-        for state in self.maze.getStates():
-            val = self.Q[state][self.select_action(state)]
-            V[state] = val
+    # def save_log(self, env, episode):
+    #     """Sauvegarde les données d'apprentissage.
+    #     :warning: Vous n'avez pas besoin de comprendre cette méthode
+    #     """
+    #     state = env.reset()
+    #     # Construit la fonction de valeur d'état associée à Q
+    #     V = np.zeros([40,10,2,2])
+    #     for state in self.spaceInvader.get_state():
+    #         val = self.Q[state][self.select_action(state)]
+    #         V[state] = val
 
-        self.qvalues = self.qvalues.append({'episode': episode, 'value': self.Q[state][self.select_greedy_action(state)]}, ignore_index=True)
-        self.values = self.values.append({'episode': episode, 'value': np.reshape(V,(1, self.maze.ny*self.maze.nx))[0]},ignore_index=True)
-
-    def select_action(self, state):
-        return "nique toi"
+    #     self.qvalues = self.qvalues.append({'episode': episode, 'value': self.Q[state][self.select_greedy_action(state)]}, ignore_index=True)
+    #     self.values = self.values.append({'episode': episode, 'value': np.reshape(V,(1, 40*10*2*2))[0]},ignore_index=True)
