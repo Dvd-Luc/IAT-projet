@@ -109,7 +109,7 @@ class SpaceInvaders():
         ecart_X = abs(self.get_player_X() - self.get_indavers_X()[index_min])
         ecart_Y = self.get_player_Y() - self.get_indavers_X()[index_min]
 
-        discrete_ecart_X = int(ecart_X / 20) #20 pixels de large par etat --> 800/20 = 40 etats
+        discrete_ecart_X = int(ecart_X / 50) #50 pixels de large par etat --> 800/50 = 16 etats
         discrete_ecart_Y = int(ecart_Y/ 60) #60 pixels de large par etat --> 600/60 = 10 etats
 
         bulletState = 1 if (self.bullet_state=='fire') else 0

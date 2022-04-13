@@ -10,10 +10,10 @@ from controller import AgentInterface
 def main():
 
     game = SpaceInvaders(display=True)
-    n_episodes = 200
+    n_episodes = 2
     max_steps = 10000
     gamma = 1
-    alpha = 0.2
+    alpha = 1
     eps_profile = EpsilonProfile(1.0,0.1)
     #controller = KeyboardController()
     #controller = RandomAgent(game.na)
