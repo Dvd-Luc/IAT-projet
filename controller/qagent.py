@@ -112,6 +112,7 @@ class QAgent(AgentInterface):
 
         if (reward ==1):
             print(self.Q[state[0]][state[1]][state[2]][state[3]][action])
+            print('score Value {}'.format(self.spaceInvader.score_val))
             #print("reward {}, max selfQ {}, alpha {}, Q_state{}".format(reward, np.max(self.Q[next_state]), self.alpha, self.Q[state] ))
             #print (self.Q[state][action])
 
@@ -158,5 +159,5 @@ class QAgent(AgentInterface):
         # print('loadedQ{}'.format(loadedQ))
 
 
-        self.qvalues = self.qvalues.append({'episode': episode, 'value': self.Q[state[0]][state[1]][state[2]][state[3]][self.select_greedy_action(state)]}, ignore_index=True)
+        self.qvalues = self.qvalues.append({'episode': episode, 'value': self.spaceInvader.score_val}, ignore_index=True)
         # self.values = self.values.append({'episode': episode, 'value': np.reshape(V,(1, 40*10*2*2))[0]},ignore_index=True)
