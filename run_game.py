@@ -10,8 +10,8 @@ from controller import AgentInterface
 def main():
 
     game = SpaceInvaders(display=True)
-    n_episodes = 20
-    max_steps = 10000
+    n_episodes = 3
+    max_steps = 5000
     gamma = 0.9
     alpha = 1
     eps_profile = EpsilonProfile(1.0,0.1)
@@ -40,7 +40,7 @@ def test_spaceInvader(env: SpaceInvaders, agent: AgentInterface, max_steps: int,
             next_state, reward, terminal = env.step(action)
 
             if display:
-                sleep(speed)
+                #sleep(speed)
                 env.render()
 
             sum_rewards += reward

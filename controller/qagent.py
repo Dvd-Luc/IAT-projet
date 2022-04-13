@@ -88,9 +88,9 @@ class QAgent(AgentInterface):
 
             # Sauvegarde et affiche les données d'apprentissage
             if n_episodes >= 0:
+                self.save_log(env, episode)
                 state = env.reset()
             #    #print("\r#> Ep. {}/{} Value {}".format(episode, n_episodes, self.Q[state][self.select_greedy_action(state)]), end =" ")
-                self.save_log(env, episode)
 
         #self.values.to_csv('visualisation/logV.csv')
         print(self.qvalues)
@@ -142,7 +142,10 @@ class QAgent(AgentInterface):
         """Sauvegarde les données d'apprentissage.
         :warning: Vous n'avez pas besoin de comprendre cette méthode
         """
-        state = env.reset()
+        # print(self.spaceInvader.score_val)
+        self.qvalues = self.qvalues.append({'episode': episode, 'value': self.spaceInvader.score_val}, ignore_index=True)
+
+        #state = env.reset()
         # Construit la fonction de valeur d'état associée à Q
         # V = np.zeros([40,10,2,2])
         # for state in self.spaceInvader.get_state():
@@ -159,5 +162,4 @@ class QAgent(AgentInterface):
         # print('loadedQ{}'.format(loadedQ))
 
 
-        self.qvalues = self.qvalues.append({'episode': episode, 'value': self.spaceInvader.score_val}, ignore_index=True)
         # self.values = self.values.append({'episode': episode, 'value': np.reshape(V,(1, 40*10*2*2))[0]},ignore_index=True)
