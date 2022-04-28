@@ -5,21 +5,28 @@ from controller.random_agent import RandomAgent
 from controller.qagent import QAgent
 from epsilon_profile import EpsilonProfile
 from controller import AgentInterface
+import numpy
 
 
 def main():
 
     game = SpaceInvaders(display=True)
     n_episodes = 3
-    max_steps = 5000
-    gamma = 0.9
+    max_steps = 1000
+    # gamma = 0.9
     alpha = 1
     eps_profile = EpsilonProfile(1.0,0.1)
     #controller = KeyboardController()
     #controller = RandomAgent(game.na)
-    controller = QAgent(game, eps_profile, gamma, alpha)
-    controller.learn(game,n_episodes,max_steps)
-    test_spaceInvader(game,controller,max_steps, speed=0.1, display=True)
+    episodes = numpy.arange(50, 350, 50, dtype=int)
+    gammas = numpy.arange(0.1, 1.1,0.1);
+    for gamma in gammas:
+        for episode in episodes:
+            controller = QAgent(game,eps_profile, gamma, alpha)
+            controller.learn(game,episode,max_steps)
+    # controller = QAgent(game, eps_profile, gamma, alpha)
+    # controller.learn(game,n_episodes,max_steps)
+    # test_spaceInvader(game,controller,max_steps, speed=0.1, display=True)
  
     state = game.reset()
     while True:

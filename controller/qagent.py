@@ -94,7 +94,7 @@ class QAgent(AgentInterface):
 
         #self.values.to_csv('visualisation/logV.csv')
         print(self.qvalues)
-        self.qvalues.to_csv('logQ.csv')
+        self.qvalues.to_csv('logQ_{}_{}.csv'.format(n_episodes, self.gamma))
 
     def updateQ(self, state, action, reward, next_state):
         """À COMPLÉTER!
@@ -110,11 +110,11 @@ class QAgent(AgentInterface):
     
         self.Q[state[0]][state[1]][state[2]][state[3]][action] = (1. - self.alpha) * self.Q[state[0]][state[1]][state[2]][state[3]][action] + self.alpha * (reward + self.gamma * np.max(self.Q[next_state[0]][next_state[1]][next_state[2]][next_state[3]]))
 
-        if (reward ==1):
+        """if (reward ==1):
             print(self.Q[state[0]][state[1]][state[2]][state[3]][action])
             print('score Value {}'.format(self.spaceInvader.score_val))
             #print("reward {}, max selfQ {}, alpha {}, Q_state{}".format(reward, np.max(self.Q[next_state]), self.alpha, self.Q[state] ))
-            #print (self.Q[state][action])
+            #print (self.Q[state][action])"""
 
     def select_action(self, state : 'Tuple[int, int]'):
         """À COMPLÉTER!
@@ -153,7 +153,7 @@ class QAgent(AgentInterface):
         #     V[state] = val
 
         with open('Qmatrix_{}'.format(self.gamma), 'wb') as write_file:
-            pickle.dump(self.Q, write_file)
+            pickle.dump(self.qvalues, write_file)
 
         # with open('Qmatrix_{}'.format(self.gamma), 'rb') as read_file:
         #     loadedQ = pickle.load(read_file)
