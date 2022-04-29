@@ -29,12 +29,12 @@ def main():
         test_spaceInvader(game,controller,max_steps, speed=0.1, display=True)
     else :
         state = game.reset()
-        with open('Qmatrix_0.5', 'rb') as read_file:
+        with open('Qmatrix_0.5_training', 'rb') as read_file:
             controller.Q = pickle.load(read_file)
         while True:
             action = controller.select_action(state)
             state, reward, is_done = game.step(action)
-            sleep(0.0001)
+            #sleep(0.000001)
 
 def test_spaceInvader(env: SpaceInvaders, agent: AgentInterface, max_steps: int, nepisodes : int = 1, speed: float = 0., same = True, display: bool = False):
     n_steps = max_steps
