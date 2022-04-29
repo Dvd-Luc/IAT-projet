@@ -5,34 +5,36 @@ from controller.random_agent import RandomAgent
 from controller.qagent import QAgent
 from epsilon_profile import EpsilonProfile
 from controller import AgentInterface
-import numpy
+import sys
+import argparse
+import pickle
 
+parser = argparse.ArgumentParser(description='Run game')
+parser.add_argument('--play', help='Run the program without trainning')
+args = parser.parse_args()
 
 def main():
-
+    
     game = SpaceInvaders(display=True)
-    n_episodes = 3
+    n_episodes = 1200
     max_steps = 1000
-    # gamma = 0.9
+    gamma = 0.5
     alpha = 1
     eps_profile = EpsilonProfile(1.0,0.1)
     #controller = KeyboardController()
     #controller = RandomAgent(game.na)
-    episodes = numpy.arange(50, 350, 50, dtype=int)
-    gammas = numpy.arange(0.1, 1.1,0.1);
-    for gamma in gammas:
-        for episode in episodes:
-            controller = QAgent(game,eps_profile, gamma, alpha)
-            controller.learn(game,episode,max_steps)
-    # controller = QAgent(game, eps_profile, gamma, alpha)
-    # controller.learn(game,n_episodes,max_steps)
-    # test_spaceInvader(game,controller,max_steps, speed=0.1, display=True)
- 
-    state = game.reset()
-    while True:
-        action = controller.select_action(state)
-        state, reward, is_done = game.step(action)
-        sleep(0.0001)
+    controller = QAgent(game, eps_profile, gamma, alpha)
+    if not args.play :
+        controller.learn(game,n_episodes,max_steps)
+        test_spaceInvader(game,controller,max_steps, speed=0.1, display=True)
+    else :
+        state = game.reset()
+        with open('Qmatrix_0.5', 'rb') as read_file:
+            controller.Q = pickle.load(read_file)
+        while True:
+            action = controller.select_action(state)
+            state, reward, is_done = game.step(action)
+            sleep(0.0001)
 
 def test_spaceInvader(env: SpaceInvaders, agent: AgentInterface, max_steps: int, nepisodes : int = 1, speed: float = 0., same = True, display: bool = False):
     n_steps = max_steps
