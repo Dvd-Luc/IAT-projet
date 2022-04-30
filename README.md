@@ -21,4 +21,4 @@ This will start a game with the agent and with the Q matrix of our training
 
 ## Read the subject
 
-A file `Projet_IAT.pdf` containing the walkthrough of the project is available.
+A file `DavidAzoulayGangneuxBromIAT.pdf` containing the walkthrough of the project is available.
